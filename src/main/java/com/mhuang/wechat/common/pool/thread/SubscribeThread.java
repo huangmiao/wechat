@@ -2,7 +2,7 @@ package com.mhuang.wechat.common.pool.thread;
 
 import java.sql.SQLException;
 
-import com.mhuang.wechat.service.WeChatService;
+import com.mhuang.wechat.service.ExecuteService;
 
 /**
  * 
@@ -16,7 +16,7 @@ public class SubscribeThread extends BaseThread{
 	
 	private String status; //0代表关注 1代表取消关注
 	
-	public SubscribeThread(String openId,String status,WeChatService weChatService) {
+	public SubscribeThread(String openId,String status,ExecuteService weChatService) {
 		super(openId,weChatService);
 		this.status = status;
 	}

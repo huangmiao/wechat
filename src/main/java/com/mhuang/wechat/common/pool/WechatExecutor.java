@@ -6,7 +6,7 @@ import java.util.concurrent.Executors;
 import com.mhuang.wechat.common.pool.thread.ShareThread;
 import com.mhuang.wechat.common.pool.thread.SubscribeThread;
 import com.mhuang.wechat.common.pool.thread.TextThread;
-import com.mhuang.wechat.service.WeChatService;
+import com.mhuang.wechat.service.ExecuteService;
 
 /**
  * 
@@ -19,25 +19,16 @@ public class WechatExecutor {
 
 	private ExecutorService executorService = Executors.newCachedThreadPool();
 
-	private WeChatService weChatService;
 	
-	public void subscribe(String openId,String status){
+	public void subscribe(String openId,String status,ExecuteService weChatService){
 		executorService.execute(new SubscribeThread(openId,status,weChatService));
 	}
 	
-	public void textMsg(String openId,String content){
+	public void textMsg(String openId,String content,ExecuteService weChatService){
 		executorService.execute(new TextThread(openId, content, weChatService));
 	}
 	
-	public void share(String usrId,String status,String type,String shareName,String uuid){
+	public void share(String usrId,String status,String type,String shareName,String uuid,ExecuteService weChatService){
 		executorService.execute(new ShareThread(usrId, status, type, shareName, uuid, weChatService));
-	}
-
-	public void viewMsg(){
-		
-	}
-	
-	public void setWeChatService(WeChatService weChatService) {
-		this.weChatService = weChatService;
 	}
 }

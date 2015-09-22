@@ -13,8 +13,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  */
 @XStreamAlias("item")
 public class Article extends BaseChildMessage{
-	
-	@JSONField(name="picurl")
+	 
+	@JSONField(name="picurl") 
 	private String picUrl;
 	
 	private String url;

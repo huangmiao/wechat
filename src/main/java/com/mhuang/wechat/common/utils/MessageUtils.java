@@ -29,6 +29,7 @@ public class MessageUtils<T> {
 	private static final String CLAZZ = "class";
 	private static final String OTHERMESSAGE = "otherMessage";
 	private static final String ITEM = "item";
+	@Deprecated //嵌套内部class/property会出现..暂未使用
 	private static final String OTHERCLASS="outer-class";
 	private static final String MSGTYPE = "msgtype";
 	public static void main(String[] args) {
@@ -98,8 +99,8 @@ public class MessageUtils<T> {
         JSONSerializer serializer = new JSONSerializer(sw);
         
         NameFilter nameFilter = new NameFilter() { //名字重定义
-        	String msgType = "";
 			public String process(Object source, String name, Object value) {
+				String msgType = "";
 				if(StringUtils.equals(name, MSGTYPE)){
 					msgType = value.toString();
 				}else if(StringUtils.equals(name, OTHERMESSAGE)){

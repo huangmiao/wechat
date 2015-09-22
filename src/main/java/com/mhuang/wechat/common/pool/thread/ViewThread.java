@@ -1,6 +1,6 @@
 package com.mhuang.wechat.common.pool.thread;
 
-import com.mhuang.wechat.service.WeChatService;
+import com.mhuang.wechat.service.ExecuteService;
 
 /**
  * 
@@ -13,7 +13,7 @@ public class ViewThread extends BaseThread{
 
 	private String fileName;
 	
-	public ViewThread(String openId,String fileName, WeChatService weChatService) {
+	public ViewThread(String openId,String fileName, ExecuteService weChatService) {
 		super(openId, weChatService);
 		this.fileName = fileName;
 	}

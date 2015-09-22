@@ -1,10 +1,10 @@
 package com.mhuang.wechat.common.pool.thread;
 
-import com.mhuang.wechat.service.WeChatService;
+import com.mhuang.wechat.service.ExecuteService;
 
 /**
  * 
- * @Description 
+ * @Description 基础线程
  * @author mHuang
  * @date 2015年6月8日 上午10:41:20 
  * @version V1.0.0
@@ -13,12 +13,11 @@ public abstract class BaseThread implements Runnable{
 
 	protected String openId;
 
-	protected WeChatService weChatService;
-	
+	protected ExecuteService weChatService;
 	
 	public abstract void run();
 	
-	public BaseThread(String openId,WeChatService weChatService){
+	public BaseThread(String openId,ExecuteService weChatService){
 		this.openId = openId;
 		this.weChatService = weChatService;
 	}

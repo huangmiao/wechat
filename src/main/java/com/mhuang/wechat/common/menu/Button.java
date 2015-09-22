@@ -15,7 +15,7 @@ import com.alibaba.fastjson.annotation.JSONField;
  * @author mHuang
  * @date 2015年6月8日 下午2:26:28 
  * @version V1.0.0
- */
+ */ 
 public class Button implements Serializable{
 
 	private static final long serialVersionUID = 1L;

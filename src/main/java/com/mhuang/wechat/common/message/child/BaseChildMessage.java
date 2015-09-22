@@ -14,7 +14,7 @@ public class BaseChildMessage extends BaseOtherMessage{
 	private String descption;
 
 	public String getTitle() {
-		return title;
+		return title; 
 	}
 
 	public void setTitle(String title) {

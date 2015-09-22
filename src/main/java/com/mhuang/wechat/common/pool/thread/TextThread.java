@@ -1,6 +1,9 @@
 package com.mhuang.wechat.common.pool.thread;
 
-import com.mhuang.wechat.service.WeChatService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.mhuang.wechat.service.ExecuteService;
 
 /**
  * 
@@ -11,10 +14,9 @@ import com.mhuang.wechat.service.WeChatService;
  */
 public class TextThread extends BaseThread{
 
-//	private Log log = LogFactory.getLog(this.getClass());
 	private String content;
 	
-	public TextThread(String openId,String content,WeChatService weChatService) {
+	public TextThread(String openId,String content,ExecuteService weChatService) {
 		super(openId, weChatService);
 		this.content = content;
 	}
@@ -22,6 +24,5 @@ public class TextThread extends BaseThread{
 	@Override
 	public void run() {
 		weChatService.saveOpTextSend(openId, content);
-//			log.error("保存用户文本消息异常",e);
 	}
 }

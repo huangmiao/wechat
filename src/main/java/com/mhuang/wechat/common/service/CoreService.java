@@ -2,21 +2,15 @@ package com.mhuang.wechat.common.service;
 
 import java.util.Map;
 
-import com.mhuang.wechat.common.message.TextResMessage;
-import com.mhuang.wechat.common.pool.WechatExecutor;
-import com.mhuang.wechat.common.utils.MessageUtils;
-
 /**
  * 微信核心处理service
  * @author mHuang、
  *
  */
-public class CoreService {
+public abstract class CoreService extends EventService{
 
-	private WechatExecutor wechatExecuteService;
-	
-	private static final String WECHAT_SUBSCRIBE = "0";
-	private static final String WECHAT_UNSUBSCRIBE = "1";
+	public static final String WECHAT_SUBSCRIBE = "1";
+	public static final String WECHAT_UNSUBSCRIBE = "2";
 	
 	private static final String TEXT_MSG = "text";
 	private static final String IMAGE_MSG = "image";
@@ -30,73 +24,48 @@ public class CoreService {
 	 * 微信事件监听统一管理方法
 	 * @return
 	 */
-	public StringBuffer manager(Map<String,String> wechatParamsMap,StringBuffer respContent) throws Exception{
+	public String manager(Map<String,String> wechatParamsMap) throws Exception{
 		String msgType = wechatParamsMap.get("MsgType");
 		switch(msgType){
 			case "event": //事件推送
-				event(wechatParamsMap,respContent);
-				break;
+				return event(wechatParamsMap);
 			default: //非事件
-				other(wechatParamsMap,respContent);
-				break;
+				return other(wechatParamsMap);
 		}
-		return respContent;
 	}
-	private void event(Map<String, String> map,StringBuffer respContent){
+	private String event(Map<String, String> map){
 		String openId = map.get("FromUserName"),
 			eventType = map.get("Event"),
 			appId = map.get("ToUserName"),
 			eventKey  = map.get("EventKey");
 		switch (eventType) {
 			case "subscribe"://订阅
-				wechatExecuteService.subscribe(openId,WECHAT_SUBSCRIBE);
-				break;
+				return subscribe(openId,appId);
 			case "unsubscribe"://取消订阅
-				wechatExecuteService.subscribe(openId,WECHAT_UNSUBSCRIBE);
-				break;
+				return unSubscribe(openId,appId);
 			case "CLICK"://点击菜单拉取消息时的事件推送
-				break;
+				return click(openId,appId,eventKey);
 			case "VIEW"://用户点击view页面
-				break;
+				return view(openId,appId,eventKey);
 		}
+		return null;
 	}
 	
-	private void other(Map<String, String> map,StringBuffer respContent){
+	private String other(Map<String, String> map){
 		String msgType = map.get("MsgType"),
 			appId = map.get("ToUserName"),
 			openId = map.get("FromUserName");
 		switch(msgType){
 			case TEXT_MSG:
-				MessageUtils<TextResMessage> textMessageUtils = new MessageUtils<TextResMessage>();
-				TextResMessage textMessage = new TextResMessage(openId,appId);
-				textMessage.setContent("你发送了文本消息");
-				respContent.append(textMessageUtils.fromObjectToXml(textMessage));
-				String content = map.get("Content");
-				wechatExecuteService.textMsg(openId, content);
-				break;
+				return textMsg(openId, appId, map.get("Content"));
 			case IMAGE_MSG:
+				return imageMsg(openId, appId);
 			case VOICE_MSG:
 			case VIDEO_MSG:
 			case SHORT_VIDEO_MSG:
 			case LOCATION_MSG:
 			case LINK_MSG:
 		}
-	}
-	/**
-	 * 
-	 * @Description 接收消息
-	 * @author mHuang
-	 * @return
-	 */
-	private String recMessage(){
-		return "";
-	}
-	
-	private String subscribe(Map<String, String> map){
-		return "";
-	}
-	//////////////////////////////setting getting///////////////////////////////////////////
-	public void setWechatExecuteService(WechatExecutor wechatExecuteService) {
-		this.wechatExecuteService = wechatExecuteService;
+		return null;
 	}
 }

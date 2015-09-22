@@ -1,8 +1,10 @@
 package com.mhuang.wechat.common.pool.thread;
 
-import sun.rmi.runtime.Log;
 
-import com.mhuang.wechat.service.WeChatService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.mhuang.wechat.service.ExecuteService;
 
 /**
  * 
@@ -13,7 +15,7 @@ import com.mhuang.wechat.service.WeChatService;
  */
 public class ShareThread extends BaseThread{
 
-//	private Log log = LogFactory.getLog(this.getClass());
+	public  Logger logger =  LoggerFactory.getLogger(getClass());
 	
 	private String usrId;
 	private String status;
@@ -21,7 +23,7 @@ public class ShareThread extends BaseThread{
 	private String shareName;
 	private String uuid;
 	
-	public ShareThread(String usrId,String status,String type,String shareName,String uuid,WeChatService weChatService){
+	public ShareThread(String usrId,String status,String type,String shareName,String uuid,ExecuteService weChatService){
 		super(usrId,weChatService);
 		this.weChatService = weChatService;
 		this.usrId = usrId;
@@ -35,11 +37,12 @@ public class ShareThread extends BaseThread{
 	public void run() {
 		try {
 			synchronized (usrId) {
+				logger.info("run wechatService share");
 				weChatService.share(usrId, status,type, shareName, uuid);
+				logger.info("stop wechatService share");
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("share Exception",e);
 		}
 	}
 }
