@@ -1,7 +1,5 @@
 package com.mhuang.wechat.common.pool.thread;
 
-import java.sql.SQLException;
-
 import com.mhuang.wechat.service.ExecuteService;
 
 /**

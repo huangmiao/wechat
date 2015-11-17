@@ -1,8 +1,5 @@
 package com.mhuang.wechat.common.pool.thread;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.mhuang.wechat.service.ExecuteService;
 
 /**

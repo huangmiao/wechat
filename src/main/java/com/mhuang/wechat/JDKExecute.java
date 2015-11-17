@@ -2,9 +2,6 @@ package com.mhuang.wechat;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * JDK反射封裝
