@@ -29,18 +29,21 @@ public class UnicodeUtils {
 		      return null;
 		    }
 	}
-	
+	public static void main(String[] args){
+		System.out.println(string2Unicode("你好"));
+		System.out.println(unicode2String("\\u4f60\\u597d"));
+	}
 	/**
 	 * unicode 转字符串
 	 */
 	public static String unicode2String(String unicode) {
-		StringBuffer sb = new StringBuffer();
-	    String str[] = unicode.toUpperCase().split("\\U");
-	    for(int i=0;i<str.length;i++){
-	      if(str[i].equals("")) continue;
-	      char c = (char)Integer.parseInt(str[i].trim(),16);
-	      sb.append(c);
-	    }
-	    return sb.toString();
+		    int n = unicode.length() / 6;  
+		    StringBuilder sb = new StringBuilder(n);  
+		    for (int i = 0, j = 2; i < n; i++, j += 6) {  
+		        String code = unicode.substring(j, j + 4);  
+		        char ch = (char) Integer.parseInt(code, 16);  
+		        sb.append(ch);  
+		    }  
+		    return sb.toString();  
 	}
 }

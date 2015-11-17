@@ -82,6 +82,26 @@ public class DateTimeUtils {
 		}
 	}
 	
+	public static String getTime(Long dateTime){
+		 Calendar calendar = Calendar.getInstance();  
+		 calendar.setTime(unitToDate(dateTime));
+		 String time = "";
+		 int amOrPm = calendar.get(Calendar.AM_PM);
+		 int hours = calendar.get(Calendar.HOUR);
+		 int mins = calendar.get(Calendar.MINUTE);
+		 if(amOrPm == Calendar.AM){
+			 if(hours<10){
+				 time = "0";
+			 }
+		 }else{
+			 hours+=12;
+		 }
+		 time+=hours+":";
+		 if(mins<10)
+			 time+=0;
+		 time += mins;
+		 return time;
+	}
 	  /** 
      * 增加日期中某类型的某数值。如增加日期 
      * @param date 日期 
