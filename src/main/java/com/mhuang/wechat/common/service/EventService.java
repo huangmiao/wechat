@@ -8,6 +8,10 @@ public abstract class EventService {
 	 */
 	public abstract String subscribe(String openId,String appId); 
 	
+	/**
+	 * 关注带事件
+	 */
+	public abstract String subscribe(String openId,String appId,String eventKey); 
 	
 	/**
 	 * 取消关注 

@@ -11,17 +11,19 @@ import java.net.URL;
 import org.apache.commons.io.FileUtils;
 
 /**
+ * 
  * 	TODO 敬请期待完善
- * @Description 
  * @author mHuang
  * @date 2015年6月23日 上午10:52:31 
  * @version V1.0.0
  */
+@Deprecated
 public class HttpUtils {
 
 	public static String getMsg(String url){
 		return getMsg(url,null);
 	}
+	@Deprecated
 	public static String getMsg(String url,String data){
 		HttpURLConnection connection = null;
 		try {
@@ -35,6 +37,7 @@ public class HttpUtils {
 		}
 		return null;
 	}
+	@Deprecated
 	public static String getHttpMsg(String url,String data,String type) {
         HttpURLConnection connection = null;
         String content = "";

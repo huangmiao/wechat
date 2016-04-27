@@ -2,6 +2,8 @@ package com.mhuang.wechat.common.service;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * 微信核心处理service
  * @author mHuang、
@@ -40,7 +42,11 @@ public abstract class CoreService extends EventService{
 			eventKey  = map.get("EventKey");
 		switch (eventType) {
 			case "subscribe"://订阅
-				return subscribe(openId,appId);
+			    if(StringUtils.isEmpty(eventKey)){
+			        return subscribe(openId,appId);
+			    }else{
+			        return subscribe(openId, appId,eventKey);
+			    }
 			case "unsubscribe"://取消订阅
 				return unSubscribe(openId,appId);
 			case "CLICK"://点击菜单拉取消息时的事件推送

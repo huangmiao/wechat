@@ -19,7 +19,7 @@ public class TextThread extends BaseThread{
 	}
 
 	@Override
-	public void run() {
+	public void run() {//文本消息保存的接口
 		weChatService.saveOpTextSend(openId, content);
 	}
 }

@@ -26,4 +26,7 @@ public class ConfigUtil {
 	public final static String SHORT_URL = PAYMENT_URL + "tools/shorturl";
 	//接口调用上报接口(POST)
 	public final static String REPORT_URL = PAYMENT_URL + "payitil/report";
+
+	//企业付款
+	public final static String TRANSFERS_URL = PAYMENT_URL + "mmpaymkttransfers/promotion/transfers";
 }

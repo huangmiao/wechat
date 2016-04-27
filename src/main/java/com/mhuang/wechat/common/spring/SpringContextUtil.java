@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContextAware;
 
 /** 
  *功能描述：获取spring容器，以访问容器中定义的其他bean  
+ * 请在spring中引入
  */ 
 public class SpringContextUtil implements ApplicationContextAware {
 	/**  

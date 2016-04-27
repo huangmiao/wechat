@@ -15,11 +15,15 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.jasypt.encryption.ByteEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +60,7 @@ public class NetWorkUtils {
 	}
 	
 	public JSONObject syncHttpClient(String webUrl){
-		return syncHttpClient(webUrl,null);
+		return syncHttpClient(webUrl,new CommonPostParamers());
 	}
 	
 	public static void setRequest(HttpURLConnection connection,String methodType){
@@ -97,6 +101,13 @@ public class NetWorkUtils {
 	    return outSteam.toString();  
 	}  
 	
+	/**
+	 * 可使用
+	 * @param webUrl
+	 * @param params
+	 * @return
+	 */
+	@Deprecated
 	public String oldgetString(String webUrl,CommonPostParamers params){
 		logger.info("正在执行");
 		logger.info("url:"+webUrl);
@@ -116,7 +127,9 @@ public class NetWorkUtils {
 	        MultipartEntityBuilder reqEntity = params.getMultiPart();
 	        reqEntity.build().writeTo(urlConn.getOutputStream());
 	        System.out.println("end connection time"+System.currentTimeMillis());
-	        response = IOUtils.toString(urlConn.getInputStream());
+	        InputStream inStream = urlConn.getInputStream();
+	        response = IOUtils.toString(inStream);
+	        IOUtils.closeQuietly(inStream);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -134,6 +147,96 @@ public class NetWorkUtils {
 		return response;
 	}
 	
+	public JSONObject syncGetHttpClient(String webUrl){
+        String returnData = getString2(webUrl);
+        return JSON.parseObject(returnData);
+    }
+	
+	public JSONObject syncHttpClient(String webUrl,JSONObject json){
+	    logger.info("正在执行");
+        logger.info("url:"+webUrl);
+        logger.info("startTime："+System.currentTimeMillis());
+        String response = null;
+        CloseableHttpClient httpclient = null;
+        CloseableHttpResponse responses = null;
+        try {
+            httpclient = HttpClients.createDefault();  
+            HttpPost httppost = new HttpPost(webUrl);
+//            ByteArrayEntity byteArr = new ByteArrayEntity(json.toString().getBytes("UTF-8"));
+            StringEntity s = new StringEntity(json.toString(),"UTF-8");
+            s.setContentEncoding("UTF-8");
+            s.setContentType("application/json");
+            httppost.setEntity(s);
+            responses = httpclient.execute(httppost); 
+            HttpEntity entity = responses.getEntity();
+            response = EntityUtils.toString(entity);
+            EntityUtils.consume(entity);  
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if(responses != null){
+                    responses.close();
+                    responses = null;
+                }
+                if (httpclient != null){
+                    httpclient.close();
+                    httpclient = null;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            logger.info("endTime："+System.currentTimeMillis());
+            logger.debug("执行完毕！！");
+        }
+        logger.debug("返回的数据："+response);
+        return JSON.parseObject(response);
+	}
+	
+	public String getString2(String webUrl){
+	    logger.info("正在执行");
+        logger.info("url:"+webUrl);
+        logger.info("startTime："+System.currentTimeMillis());
+        String response = null;
+        CloseableHttpClient httpclient = null;
+        CloseableHttpResponse responses = null;
+        try {
+            httpclient = HttpClients.createDefault();  
+            HttpGet httpGet = new HttpGet(webUrl);  
+            responses = httpclient.execute(httpGet); 
+            HttpEntity entity = responses.getEntity();
+            response = EntityUtils.toString(entity);
+            EntityUtils.consume(entity);  
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if(responses != null){
+                    responses.close();
+                    responses = null;
+                }
+                if (httpclient != null){
+                    httpclient.close();
+                    httpclient = null;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            logger.info("endTime："+System.currentTimeMillis());
+            logger.debug("执行完毕！！");
+        }
+        logger.debug("返回的数据："+response);
+        return response;
+	}
+
 	public String getString(String webUrl,CommonPostParamers params){
 		logger.info("正在执行");
 		logger.info("url:"+webUrl);
@@ -273,6 +376,7 @@ public class NetWorkUtils {
 	
 	public static byte[] getImageBySync(String url,String data) {
         HttpURLConnection connection = null;
+        InputStream in = null;
         try {
             URL address_url = new URL(url);
             connection = (HttpURLConnection) address_url.openConnection();
@@ -297,7 +401,8 @@ public class NetWorkUtils {
             //得到访问页面的返回值
             int response_code = connection.getResponseCode();
             if (response_code == HttpURLConnection.HTTP_OK) {
-                return IOUtils.toByteArray(connection.getInputStream());
+                in = connection.getInputStream();
+                return IOUtils.toByteArray(in);
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -306,6 +411,9 @@ public class NetWorkUtils {
         } finally {
             if(connection !=null){
                 connection.disconnect();
+            }
+            if(in != null){
+                IOUtils.closeQuietly(in);
             }
         }
         return null;

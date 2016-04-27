@@ -36,7 +36,10 @@ public class ShareThread extends BaseThread{
 	@Override
 	public void run() {
 		try {
-			synchronized (usrId) {
+			/**
+			 *  锁定分享时候的用户id和uuid
+			 */
+			synchronized (new Object[]{usrId,uuid}) { //
 				logger.info("run wechatService share");
 				weChatService.share(usrId, status,type, shareName, uuid);
 				logger.info("stop wechatService share");

@@ -21,7 +21,7 @@ import org.apache.http.entity.mime.content.StringBody;
 public class CommonPostParamers {
 
 	private MultipartEntityBuilder multiPart = null;
-	private final static int boundaryLength = 32;
+	private final static int boundaryLength = 0x20;
 	private final static String boundaryAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
 	private String boundary;
 	final static String PLAIN_TEXT_TYPE = "text/plain";
@@ -32,7 +32,7 @@ public class CommonPostParamers {
 		boundary = getBoundary();
 		multiPart = MultipartEntityBuilder.create();
 		multiPart.setBoundary(boundary);
-		multiPart.setCharset(Charset.forName("UTF-8"));
+		multiPart.setCharset(Charset.forName(UTF8));
 	}
 	/**
 	 * auto generate boundary string
@@ -76,7 +76,7 @@ public class CommonPostParamers {
 	}
 	
 	public void addPart(String id, File file){
-		multiPart.addPart("img", new FileBody(file));
+		multiPart.addPart(id, new FileBody(file));
 	}
 	
 	public void addPart(String id,byte[] data){
@@ -92,8 +92,7 @@ public class CommonPostParamers {
 		for (int i = 0; i < sa.length; ++i) {
 			if (i != 0) sb.append(',');
 			sb.append(sa[i]);
-		}
-		
+		}  
 		return sb.toString();
 	}
 	

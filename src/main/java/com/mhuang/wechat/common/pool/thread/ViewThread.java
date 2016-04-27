@@ -5,10 +5,12 @@ import com.mhuang.wechat.service.ExecuteService;
 /**
  * 
  * @Description 页面统计
+ * 			请自定义实现
  * @author mHuang
  * @date 2015年6月15日 下午2:32:22 
  * @version V1.0.0
  */
+@Deprecated
 public class ViewThread extends BaseThread{
 
 	private String fileName;

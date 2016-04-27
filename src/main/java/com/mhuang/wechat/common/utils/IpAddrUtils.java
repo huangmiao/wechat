@@ -6,6 +6,12 @@ import org.apache.commons.lang3.StringUtils;
 
 public class IpAddrUtils {
 
+	public static void main(String[] args) {
+		System.out.println(
+				args
+		);
+	}
+	
 	public static String getIpAddr(HttpServletRequest request) {  
 	    String ip = request.getHeader("x-forwarded-for");  
 	    if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  

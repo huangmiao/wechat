@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,10 +58,17 @@ public class PayCommonUtil {
 				sb.append(k + "=" + v + "&");
 			}
 		}
-		//TODO 请修改成自己的申请的key
+		//TODO WechatConfig.API_KEY 请修改成自己的申请的key
 		sb.append("key=" + WechatConfig.API_KEY);
 		String sign = MD5Util.MD5Encode(sb.toString(), characterEncoding).toUpperCase();
 		return sign;
+	}
+	public static void main(String[] args) {
+		SortedMap<Object, Object> sortedMap = new TreeMap<>();
+		sortedMap.put("body", "111");
+		sortedMap.put("1body", "111");
+		System.out.println(MessageUtils.wechatPayToXml(sortedMap.toString()));
+		System.out.println(getRequestXml(sortedMap));
 	}
 	/**
 	 * @author 李欣桦

@@ -14,13 +14,23 @@ public class DateTimeUtils {
 
 	public static SimpleDateFormat defaultFormatDate = null;
 	public static SimpleDateFormat defaultFormatDateTime = null;
+	public static SimpleDateFormat defaultFormatDateTime2 = null;
 	private final static Long PY = 1000L;
 	public static SimpleDateFormat defaultFormatMonthDay = null;
+	public static SimpleDateFormat defaultFormatMonthDay_ = null;
+	public static SimpleDateFormat defaultFormatMonth = null;
+	public static SimpleDateFormat defaultFormatDay = null;
+	public static SimpleDateFormat defaultMinute = null;
 	
 	static{
+	    defaultMinute = new SimpleDateFormat("HH");
 		defaultFormatDate = new SimpleDateFormat("yyyy-MM-dd");
 		defaultFormatDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		defaultFormatDateTime2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		defaultFormatMonthDay = new SimpleDateFormat("MM月dd日");
+		defaultFormatMonth = new SimpleDateFormat("MM月");
+		defaultFormatDay = new SimpleDateFormat("dd日");
+		defaultFormatMonthDay_ = new SimpleDateFormat("MM-dd");
 	}
 	
 	public static SimpleDateFormat getFormat(String formatStr){
@@ -90,15 +100,10 @@ public class DateTimeUtils {
 		 int hours = calendar.get(Calendar.HOUR);
 		 int mins = calendar.get(Calendar.MINUTE);
 		 if(amOrPm == Calendar.AM){
-			 if(hours<10){
-				 time = "0";
-			 }
-		 }else{
-			 hours+=12;
-		 }
+			 if(hours<10){time = "0";}
+		 }else{hours+=12;}
 		 time+=hours+":";
-		 if(mins<10)
-			 time+=0;
+		 if(mins<10)time+=0;
 		 time += mins;
 		 return time;
 	}
@@ -215,6 +220,14 @@ public class DateTimeUtils {
     	return defaultFormatDate.format(date);
     }
     
+    public static String formatMonth(Date date){
+        return defaultFormatMonth.format(date);
+    }
+    
+    public static String formatDay(Date date){
+        return defaultFormatDay.format(date);
+    }
+    
     public static Date dayTime(Date date,String time){
     	try {
 			return parse(dayTime(defaultFormatDate.format(date)," "+time));
@@ -235,6 +248,25 @@ public class DateTimeUtils {
 		}
     	return null;
     }
+    public static Date parseDate(String date){
+        try {
+            return parse(date,defaultFormatDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static int daysBetween(Date date1,Date date2)  
+    {  
+        Calendar cal = Calendar.getInstance();  
+        cal.setTime(date1);  
+        long time1 = cal.getTimeInMillis();               
+        cal.setTime(date2);  
+        long time2 = cal.getTimeInMillis();       
+        long between_days=(time2-time1)/(1000*3600*24);  
+          
+       return Integer.parseInt(String.valueOf(between_days));         
+    }  
     public static String beginDayTime(String date){
     	try {
 			return dayTime(defaultFormatDate.format(parse(date,defaultFormatDate))," 00:00:00");
@@ -271,6 +303,21 @@ public class DateTimeUtils {
     	return defaultFormatMonthDay.format(date);
     }
     
+    public static String formatMonthDay_(Date date){
+        return defaultFormatMonthDay_.format(date);
+    }
+    
+    public static String formatMinute(Date date){
+        long minute = Long.parseLong(defaultMinute.format(date));
+        if(minute < 13){
+            return "上午";
+        }else if(minute < 19){
+            return "下午";
+        }else{
+            return "晚上";
+        }
+    }
+    
     public static String formatTime(Long unit){
     	Date date = unitToDate(unit);
     	Calendar calendar = Calendar.getInstance();  
@@ -285,6 +332,19 @@ public class DateTimeUtils {
         return hour+":"+min;
     }
     
+    public static String getWeekOfUnit(Long dt) {
+        return getWeekOfDate(unitToDate(dt));
+    }
+    
+    public static String getWeekOfDate(Date dt) {
+        String[] weekDays = {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dt);
+        int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        if (w < 0)
+            w = 0;
+        return weekDays[w];
+    }
 	public static void main(String[] args) {
 		System.out.println(unitToDateStr(dateStrToUnit("2015-10-15 08:00:00")));
 		System.out.println(beginDayTime(new Date()));

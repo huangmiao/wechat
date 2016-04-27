@@ -1,6 +1,9 @@
 package com.mhuang.wechat.common.utils;
 
 import java.io.Writer;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -132,6 +135,26 @@ public class MessageUtils<T> {
 		return xstream.toXML(obj);
 	}
 
+	public static String wechatPayToXml(String map){
+		XStream payXStream = new XStream(new XppDriver() {
+			private static final String XML = "xml";
+			
+			public HierarchicalStreamWriter createWriter(Writer out) {
+				return new PrettyPrintWriter(out) {
+					public void startNode(String name, Class clazz) {
+						super.startNode(name, clazz); // 首字母转大写
+					}
+					protected void writeText(QuickWriter writer, String text) {
+						writer.write("<![CDATA[");
+						writer.write(text);
+						writer.write("]]>");
+					}
+				};
+			}
+		});
+		xstream.autodetectAnnotations(true);
+		return payXStream.toXML(map);
+	}
 	/**
 	 * 扩展xstream，使其支持CDATA块
 	 * 

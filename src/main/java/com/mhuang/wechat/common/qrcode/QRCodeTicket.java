@@ -15,9 +15,10 @@ import com.alibaba.fastjson.JSON;
  */
 public class QRCodeTicket implements Serializable{
 	
-	private enum QRCODE_TYPE{
-		QR_LIMIT_SCENE,//临时二维码
-		QR_LIMIT_STR_SCENE;//永久二维码
+	public static enum QRCODE_TYPE{
+	    QR_SCENE,//临时二维码
+		QR_LIMIT_SCENE,//永久二维码
+		QR_LIMIT_STR_SCENE;//永久二维码（字符串）
 		public String toString() {
 			return QR_LIMIT_STR_SCENE.name();
 		};
@@ -58,19 +59,27 @@ public class QRCodeTicket implements Serializable{
 		this.action_info = action_info;
 	}
 
-	public void createTicket(String scene_str){
-		setAction_name(QRCODE_TYPE.QR_LIMIT_STR_SCENE);
-		Scene scene = new Scene();
-		scene.setScene_str(scene_str);
-		getAction_info().put("scene", scene);
+	
+	public void createTicket(String scene_id,QRCODE_TYPE qrcodeType){
+	    setAction_name(qrcodeType);
+        Scene scene = new Scene();
+        scene.setScene_id(scene_id);
+        getAction_info().put("scene", scene);
+	}
+	
+	public void createTicket(String scene_id,String expire_seconds,QRCODE_TYPE qrcodeType){
+	    setAction_name(qrcodeType);
+        Scene scene = new Scene();
+        scene.setScene_id(scene_id);
+        setExpire_seconds(expire_seconds);
+        getAction_info().put("scene", scene);
 	}
 
 	class Scene{
 		
-		private String scene_id;//临时二维码采用
-		
+		private String scene_id;//临时/永久二维码采用（数字）
 		private String scene_str;//永久二维码采用
-
+		
 		public String getScene_id() {
 			return scene_id;
 		}
@@ -89,8 +98,8 @@ public class QRCodeTicket implements Serializable{
 	}
 
 	public static void main(String[] args) {
-		QRCodeTicket qrcode = new QRCodeTicket();
-		qrcode.createTicket("11");
-		System.out.println(JSON.toJSONString(qrcode));
+//		QRCodeTicket qrcode = new QRCodeTicket();
+//		qrcode.createTicket(11,"11");
+//		System.out.println(JSON.toJSONString(qrcode));
 	}
 }

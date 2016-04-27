@@ -2,18 +2,32 @@ package com.mhuang.wechat.common.utils;
 
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.KeyStore;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +38,65 @@ import org.slf4j.LoggerFactory;
  */
 public class CommonUtil {
 	private static Logger log = LoggerFactory.getLogger(CommonUtil.class);
+    
+	public static String httpsSSLRequest(String requestUrl,String request,String mchid) throws Exception{
+	  //指定读取证书格式为PKCS12
+	    KeyStore keyStore = KeyStore.getInstance("PKCS12");
+	    //读取本机存放的PKCS12证书文件@TODO证书地址
+//	    FileInputStream instream = new FileInputStream(new File("D:/apiclient_cert.p12"));
+	    FileInputStream instream = new FileInputStream(new File("/ca/apiclient_cert.p12"));
+	    try {
+	    //指定PKCS12的密码(商户ID)
+	    keyStore.load(instream, mchid.toCharArray());
+	    } finally {
+	    instream.close();
+	    }
+	    SSLContext sslcontext = SSLContexts.custom()
+	    .loadKeyMaterial(keyStore, mchid.toCharArray()).build();
+	    //指定TLS版本
+	    SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+	    sslcontext,new String[] { "TLSv1" },null,
+	    SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+	    //设置httpclient的SSLSocketFactory
+	    CloseableHttpClient httpclient = HttpClients.custom()
+	    .setSSLSocketFactory(sslsf)
+	    .build();
+	    String response = null;
+	    CloseableHttpResponse responses = null;
+	    try {
+            HttpPost httppost = new HttpPost(requestUrl);
+            StringEntity s = new StringEntity(request,"UTF-8");
+            s.setContentEncoding("UTF-8");
+            s.setContentType("application/xml");
+            httppost.setEntity(s);
+            responses = httpclient.execute(httppost); 
+            HttpEntity entity = responses.getEntity();
+            response = EntityUtils.toString(entity);
+            EntityUtils.consume(entity);  
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if(responses != null){
+                    responses.close();
+                    responses = null;
+                }
+                if (httpclient != null){
+                    httpclient.close();
+                    httpclient = null;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            log.info("endTime："+System.currentTimeMillis());
+            log.debug("执行完毕！！");
+        }
+	    return response;
+	}
 	/**
 	 * 发送https请求
 	 * @param requestUrl 请求地址

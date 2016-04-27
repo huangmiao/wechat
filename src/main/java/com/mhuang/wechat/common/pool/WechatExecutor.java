@@ -26,6 +26,10 @@ public class WechatExecutor {
 		executorService.execute(new SubscribeThread(openId,status,weChatService));
 	}
 	
+	public void subscribeEventOther(String openId,String status,String eventKey,ExecuteService weChatService){
+	    executorService.execute(new SubscribeThread(openId,status,eventKey,weChatService));
+	}
+	
 	public void textMsg(String openId,String content,ExecuteService weChatService){
 		executorService.execute(new TextThread(openId, content, weChatService));
 	}

@@ -18,6 +18,11 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
+/**
+ * 二维码工具类
+ * @author mHuang
+ *
+ */
 public class QRCodeUtils {
 
 	private static final int BLACK = 0xFF000000;
